@@ -8,11 +8,11 @@ class Screen {
             },
             "number": {
                 "color": "#ffff00",
-                "size": Math.round(canvas.width / 2 - canvas.width / 30) - 10
+                "size": Math.round(canvas.width / 2 - canvas.width / 30)
             },
             "margin": {
-                "left": 10,
-                "top": 10
+                "left": 0,
+                "top": 0
             },
             "padding": Math.round(canvas.width / 15)
         };
@@ -27,19 +27,19 @@ class Screen {
             }
         }
     }
-    async drawNumberSlowly(startX, startY, end, directionX, directionY, w, h, number = 0, oldNumber, waitTime, style = starck) {
-        for (var i = 0; i < end; i++) {
+    async drawNumberSlowly(startX, startY, end, directionX, directionY, w, h, number = 0, oldNumber = 0, waitTime = 10, quality = 1, style = starck) {
+        for (var i = 0; i < end; i += quality) {
             this.drawNumber(startX + (directionX ? i : -i), startY, w, h, oldNumber, style);
-            await new Promise(resolve => setTimeout(resolve, waitTime));
+            await new Promise(resolve => setTimeout(resolve, waitTime * quality));
             this.screenContext.clearRect(startX + (directionX ? i : -i), startY, w, h);
         }
-        for (var i = h; i >= 0; i--) {
+        for (var i = end; i >= 0; i -= quality) {
             this.screenContext.clearRect(startX, startY + (directionY ? i + 1 : -(i + 1)), w, h);
             this.drawNumber(startX, startY + (directionY ? i : -i), w, h, number, style);
-            await new Promise(resolve => setTimeout(resolve, waitTime));
+            await new Promise(resolve => setTimeout(resolve, waitTime * quality));
         }
     }
-    drawTime(time) {
+    drawTime(time, all = false) {
         this.screen.style.backgroundColor = this.style.background.color;
         var numbersList = [[], []];
         numbersList[0][1] = time.getHours() % 10;
@@ -50,8 +50,8 @@ class Screen {
             numbersList[1][0] = Math.floor(time.getMinutes() / 10);
         for (var y = 0; y < 2; y++) {
             for (var x = 0; x < 2; x++) {
-                if (this.oldTime[y][x] != numbersList[y][x]) {
-                    this.drawNumberSlowly((x * (this.style.number.size + this.style.padding)) + this.style.margin.left, (y * (this.style.number.size + this.style.padding)) + this.style.margin.top, this.style.number.size + this.style.margin.left, x, y, this.style.number.size, this.style.number.size, numbersList[y][x], this.oldTime[y][x], 10);
+                if (this.oldTime[y][x] != numbersList[y][x] || all) {
+                    this.drawNumberSlowly((x * (this.style.number.size + this.style.padding)) + this.style.margin.left, (y * (this.style.number.size + this.style.padding)) + this.style.margin.top, this.style.number.size + this.style.margin.left, x, y, this.style.number.size, this.style.number.size, numbersList[y][x], this.oldTime[y][x], 5, 1);
                 }
             }
         }
