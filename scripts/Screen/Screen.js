@@ -27,9 +27,20 @@ class Screen {
             }
         }
     }
+    async drawNumberSlowly(startX, startY, end, directionX, directionY, w, h, number = 0, oldNumber, waitTime, style = starck) {
+        for (var i = 0; i < end; i++) {
+            this.drawNumber(startX + (directionX ? i : -i), startY, w, h, oldNumber, style);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+            this.screenContext.clearRect(startX + (directionX ? i : -i), startY, w, h);
+        }
+        for (var i = h; i >= 0; i--) {
+            this.screenContext.clearRect(startX, startY + (directionY ? i + 1 : -(i + 1)), w, h);
+            this.drawNumber(startX, startY + (directionY ? i : -i), w, h, number, style);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+    }
     drawTime(time) {
         this.screen.style.backgroundColor = this.style.background.color;
-        this.screenContext.clearRect(0, 0, this.screen.width, this.screen.height);
         var numbersList = [[], []];
         numbersList[0][1] = time.getHours() % 10;
         if (time.getHours() >= 10)
@@ -39,10 +50,12 @@ class Screen {
             numbersList[1][0] = Math.floor(time.getMinutes() / 10);
         for (var y = 0; y < 2; y++) {
             for (var x = 0; x < 2; x++) {
-                var X = (x * (this.style.number.size + this.style.padding)) + this.style.margin.left;
-                var Y = (y * (this.style.number.size + this.style.padding)) + this.style.margin.top;
-                this.drawNumber(X, Y, this.style.number.size, this.style.number.size, numbersList[y][x]);
+                if (this.oldTime[y][x] != numbersList[y][x]) {
+                    this.drawNumberSlowly((x * (this.style.number.size + this.style.padding)) + this.style.margin.left, (y * (this.style.number.size + this.style.padding)) + this.style.margin.top, this.style.number.size + this.style.margin.left, x, y, this.style.number.size, this.style.number.size, numbersList[y][x], this.oldTime[y][x], 10);
+                }
             }
         }
+        this.oldTime = numbersList;
     }
+    oldTime = [[], []];
 };
