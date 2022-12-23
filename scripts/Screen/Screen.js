@@ -8,13 +8,13 @@ class Screen {
             },
             "number": {
                 "color": "#ffff00",
-                "size": Math.round(canvas.width / 2 - canvas.width / 30)
+                "size": Math.round(canvas.width / 2 - canvas.width / 20) - 10
             },
             "margin": {
-                "left": 0,
-                "top": 0
+                "left": 10,
+                "top": 10
             },
-            "padding": Math.round(canvas.width / 15)
+            "padding": Math.round(canvas.width / 10)
         };
     }
     drawNumber(x, y, w, h, number = 0, style = starck) {

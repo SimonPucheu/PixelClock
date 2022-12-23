@@ -1,4 +1,4 @@
-# StarckClock
+# PixelClock
 This is a project to recreate the clock of the Freebox Revolution designed by Starck
 
 ## Branches

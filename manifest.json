@@ -1,0 +1,9 @@
+{
+    "name": "PixelClock",
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "manifest_version": 3,
+    "version": "0.1",
+    "description": "This is a project to recreate the clock of the Freebox Revolution"
+}
