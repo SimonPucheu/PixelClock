@@ -1,23 +1,34 @@
-#include <TimeLib.h>
-#include <Screen.h>
+#include <VirtualDate.h>
+#include <Clock.h>
 
-Time time(millis(), 16, 0);
-Screen screen(10, 9, 8);
+Date time(millis(), 12, 0);
+Clock clock(10, 9, 8);
 int oldMinute = -1;
-//StaticJsonDocument<200> json;
+char* buffer = "";
 
 void setup() {
   Serial.begin(9600);
-  //serializeJson(screen.style, Serial);
-  //Serial.println();
-  screen.setup();
+  clock.setup();
 }
 
 void loop() {
+  if (Serial.available() > 0)
+  {
+    char r = Serial.read();
+    if (r == '.')
+    {
+      deserializeJson(clock.style, buffer, DeserializationOption::Filter(clock.filtrer));
+      buffer = "";
+    }
+    else
+    {
+      buffer += r;
+    }
+  }
   time.setTimestamp(millis());
   if (time.getMinutes() != oldMinute)
   {
-    screen.drawTime(time.getHours(), time.getMinutes());
+    clock.drawTime(time.getHours(), time.getMinutes());
     oldMinute = time.getMinutes();
   }
   delay(1000);

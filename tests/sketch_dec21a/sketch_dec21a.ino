@@ -1,38 +1,40 @@
 #include <ArduinoJson.h>
 
-StaticJsonDocument<200> defaultStyle;
-StaticJsonDocument<200> style;
-StaticJsonDocument<200> json;
+StaticJsonDocument<256> filtrer;
+StaticJsonDocument<256> style;
+char* buffer = "";
 
 void setup() {
   Serial.begin(9600);
-  defaultStyle["background"]["color"]["hex"]["24"] = true;
-  defaultStyle["number"]["color"]["hex"]["24"] = true;
-  defaultStyle["number"]["size"] = true;
-  defaultStyle["margin"]["left"] = true;
-  defaultStyle["margin"]["top"] = true;
-  defaultStyle["padding"] = true;
+  filtrer["background"]["color"]["hex"]["24"] = true;
+  filtrer["number"]["color"]["hex"]["24"] = true;
+  filtrer["number"]["size"] = true;
+  filtrer["margin"]["left"] = true;
+  filtrer["margin"]["top"] = true;
+  filtrer["padding"] = true;
+  filtrer["landscape"] = true;
 }
 
 void loop() {
-  if (Serial.available())
+  int availableBytes = Serial.available();
+  for (int i = 0; i < availableBytes; i++)
   {
-    Serial.println("something on serial");
-    DeserializationError error = deserializeJson(json, Serial, DeserializationOption::Filter(defaultStyle));
-    if (error == DeserializationError::Ok)
+    char r = Serial.read();
+    if (r == '.')
     {
-      Serial.println("good");
-      style = json;
-      serializeJson(style, Serial);
+      //buffer = "{\"padding\":0}";
+      //Serial.println("end");
+      //Serial.println(buffer);
+      DeserializationError err = deserializeJson(style, buffer, DeserializationOption::Filter(filtrer));
+      //Serial.println(err == DeserializationError::Ok);
+      serializeJsonPretty(style, Serial);
+      buffer = "";
     }
     else
     {
-      Serial.println("nop");
-      Serial.println(error.c_str());
-      while (Serial.available())
-      {
-        Serial.read();
-      }
+      buffer[i] = r;
+      //Serial.print(i); Serial.print(": "); Serial.println(buffer[i]);
     }
   }
+  delay(1000);
 }
