@@ -6,11 +6,11 @@ This is the arduin source code.
 
 ### Software
 The [`ino`](./src/PixelClock/PixelClock.ino) file depends of these two librairies:
-* [Screen](https://github.com/6moon9/Screen) The librairy containing all functions to draw numbers on the screen
-* [Time](https://github.com/6moon9/Time) Allow you to use and manipulate time on an arduino without any hardware
+* [Clock](https://github.com/6moon9/Clock) The librairy containing all functions to draw numbers on the screen
+* [VirtualDate](https://github.com/6moon9/VirtualDate) Allow you to use and manipulate time on an arduino without any hardware
 
 ### Harware
-* Arduino board (Uno, Mega, Nano, no matter)
+* Arduino board (Uno)
 * TFT Display 128*160
 
 ## Branches
