@@ -1,10 +1,11 @@
-#include <VirtualDate.h>
+#include <Timino.h>
 #include <Clock.h>
 
 Date time(millis(), 12, 0);
 Clock clock(10, 9, 8);
 int oldMinute = -1;
 char* buffer = "";
+StaticJsonDocument<256> json;
 
 void setup() {
   Serial.begin(9600);
@@ -14,15 +15,17 @@ void setup() {
 void loop() {
   if (Serial.available() > 0)
   {
-    char r = Serial.read();
-    if (r == '.')
+    char c = Serial.read();
+    if (c == '.')
     {
-      deserializeJson(clock.style, buffer, DeserializationOption::Filter(clock.filtrer));
+      Serial.println(buffer);
+      //deserializeJson(json, buffer);
+      //serializeJsonPretty(json, Serial);
       buffer = "";
     }
     else
     {
-      buffer += r;
+      buffer += c;
     }
   }
   time.setTimestamp(millis());
